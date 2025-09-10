@@ -2,14 +2,21 @@
     "homepage": "https://github.com/inetBrad/SMS-Email-Relay",
     "license": "MIT",
     "authors": [
-    	{
+        {
             "name": "Brad Roldan"
         }
     ],
     "require": {
         "giggsey/libphonenumber-for-php": "^8.4",
-        "mailgun/mailgun-php": "^2.3",
-        "php-http/guzzle6-adapter": "^1.1",
-        "php-http/message": "^1.6"
+        "php-http/message": "^1.6",
+        "symfony/http-client": "^7.3",
+        "nyholm/psr7": "^1.8",
+        "guzzlehttp/guzzle": "^7.10",
+        "mailgun/mailgun-php": "^4.3"
+    },
+    "config": {
+        "allow-plugins": {
+            "php-http/discovery": true
+        }
     }
 }
