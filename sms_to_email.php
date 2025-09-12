@@ -81,15 +81,14 @@ if (in_array($rest_vars['type'], array('message-received','message received'))) 
 
         // Often people will send media without corresponding text.
         // Mailgun API gets upset if there is not text / body
-        if (empty($rest_vars['text'])) {
-            $emailFields['text'] = "Attached";
+        if (empty($rest_vars['message']['text'])) {
+            $emailFields['message']['text'] = "Attached";
         }
     }
 
     // Relay the SMS to email
-    $psr17Factory = new Psr17Factory();                                                                             
-    $mgClient = new Mailgun(MAILGUN_KEY, new GuzzleAdapter($psr17Factory));
-    $result = $mgClient->sendMessage(DOMAIN, $emailFields,  $emailAttachments);
+    $mgClient = Mailgun::create('MAILGUN_KEY');
+    $result = $mgClient->messages()->send(DOMAIN, $emailFields,  $emailAttachments);
 
     // Delete any downloaded attachments
     if (isset($mediaList)) {
