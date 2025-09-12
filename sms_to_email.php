@@ -59,7 +59,7 @@ $rest_vars = json_decode($rest_json, true);
 if (in_array($rest_vars['type'], array('message-received','message received'))) { // Incoming message
     // Verify that we have a matching email for the "to" number
     if (!lookupEmail($rest_vars['message']['to'])) {
-        error_log("No corresponding email for " . $rest_vars['message']['to']);
+        error_log("No corresponding email for " . $rest_vars['to']);
         die();
     }
 
