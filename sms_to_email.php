@@ -11,6 +11,9 @@
 require __DIR__ . '/vendor/autoload.php';
 require_once('credentials.php');
 use Mailgun\Mailgun;
+use Nyholm\Psr7\Factory\Psr17Factory;
+use Http\Adapter\Guzzle7\Client as GuzzleAdapter;
+
 
 
 /************************************************************************/
@@ -66,8 +69,8 @@ if (in_array($rest_vars['type'], array('message-received','message received'))) 
                             \libphonenumber\PhoneNumberFormat::NATIONAL) 
                             . " <" . substr($rest_vars['to'],2) ."@". DOMAIN . ">",
         'to'      => lookupEmail($rest_vars['to']),
-        'subject' => $rest_vars['from'],
-        'text'    => $rest_vars['text']
+        'subject' => $rest_vars['message']['from'],
+        'text'    => $rest_vars['message']['text']
         );
 
     $emailAttachments['attachment'] = array();
@@ -84,7 +87,8 @@ if (in_array($rest_vars['type'], array('message-received','message received'))) 
     }
 
     // Relay the SMS to email
-    $mgClient = new Mailgun(MAILGUN_KEY, new \Http\Adapter\Guzzle6\Client());
+    $psr17Factory = new Psr17Factory();                                                                             
+    $mgClient = new Mailgun(MAILGUN_KEY, new GuzzleAdapter($psr17Factory));
     $result = $mgClient->sendMessage(DOMAIN, $emailFields,  $emailAttachments);
 
     // Delete any downloaded attachments
