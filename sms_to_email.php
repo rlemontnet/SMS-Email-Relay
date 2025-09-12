@@ -58,30 +58,30 @@ $rest_vars = json_decode($rest_json, true);
 
 if (in_array($rest_vars['type'], array('message-received','message received'))) { // Incoming message
     // Verify that we have a matching email for the "to" number
-    if (!lookupEmail($rest_vars['message']['to'])) {
+    if (!lookupEmail($rest_vars['to'])) {
         error_log("No corresponding email for " . $rest_vars['to']);
         die();
     }
 
     $phoneUtil = \libphonenumber\PhoneNumberUtil::getInstance();
     $emailFields = array(
-        'from'    => "SMS " . $phoneUtil->format($phoneUtil->parse($rest_vars['message']['to'], "US"),
+        'from'    => "SMS " . $phoneUtil->format($phoneUtil->parse($rest_vars['to'], "US"),
                             \libphonenumber\PhoneNumberFormat::NATIONAL) 
-                            . " <" . substr($rest_vars['message']['to'],2) ."@". DOMAIN . ">",
-        'to'      => lookupEmail($rest_vars['message']['to']),
-        'subject' => $rest_vars['message']['from'],
-        'text'    => $rest_vars['message']['text']
+                            . " <" . substr($rest_vars['to'],2) ."@". DOMAIN . ">",
+        'to'      => lookupEmail($rest_vars['to']),
+        'subject' => $rest_vars['from'],
+        'text'    => $rest_vars['text']
         );
 
     $emailAttachments['attachment'] = array();
-    if (isset($rest_vars['message']['media'])) {
+    if (isset($rest_vars['media'])) {
         // retreive media and add to array
-        $mediaList = getBandwidthMedia($rest_vars['message']['media']);
+        $mediaList = getBandwidthMedia($rest_vars['media']);
         $emailAttachments['attachment'] = $mediaList;
 
         // Often people will send media without corresponding text.
         // Mailgun API gets upset if there is not text / body
-        if (empty($rest_vars['message']['text'])) {
+        if (empty($rest_vars['text'])) {
             $emailFields['text'] = "Attached";
         }
     }
