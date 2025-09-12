@@ -53,7 +53,7 @@ if (file_exists('contacts.csv')) {
 $rest_json = file_get_contents("php://input");
 $rest_vars = json_decode($rest_json, true);
 
-if (in_array($rest_vars['eventType'], array('sms','mms'))) { // Incoming message
+if (in_array($rest_vars['type'], array('message-received','message received'))) { // Incoming message
     // Verify that we have a matching email for the "to" number
     if (!lookupEmail($rest_vars['to'])) {
         error_log("No corresponding email for " . $rest_vars['to']);
